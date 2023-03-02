@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         applicationId = namespace
-        minSdk = 29
+        minSdk = 30
         targetSdk = compileSdk
         val versionConfig = getVersionConfig()
         versionCode = versionConfig["versionCode"].toString().toInt()
@@ -137,7 +137,7 @@ dependencies {
     // Kotlin-serilization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     // Activity Result API
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
@@ -164,6 +164,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-insets:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-insets-ui:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

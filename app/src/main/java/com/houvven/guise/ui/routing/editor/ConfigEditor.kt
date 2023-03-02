@@ -22,10 +22,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.*
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +44,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.houvven.guise.ContextAmbient
 import com.houvven.guise.R
 import com.houvven.guise.db.DeviceDBHelper
@@ -55,8 +57,11 @@ import com.houvven.guise.module.preset.NetworkPreset
 import com.houvven.guise.module.preset.ReleasePreset
 import com.houvven.guise.module.preset.SimPreset
 import com.houvven.guise.ui.components.SearchBox
+import com.houvven.guise.ui.isHooked
 import com.houvven.guise.util.android.Randoms
+import com.houvven.guise.util.android.WiFiUtils
 import com.houvven.guise.xposed.config.ModuleConfigState
+import com.houvven.guise.xposed.config.WiFiScanResult
 import kotlinx.coroutines.launch
 
 
@@ -79,6 +84,35 @@ private fun ConfigEditorItems(state: ModuleConfigState, launch: () -> Unit) {
         localPreset.value = preset
         localSetValue.value = setValue
         launch()
+    }
+
+    @OptIn(ExperimentalPermissionsApi::class)
+    @Composable
+    fun WiFiScanResultSwitch(state: MutableState<List<WiFiScanResult>>, label: String) {
+        Container {
+            val color =
+                if (isHooked) MaterialTheme.colorScheme.onSurfaceVariant
+                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+            Text(text = label, fontSize = 16.sp, color = color)
+            val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+            if (locationPermissionState.status.isGranted) {
+                Switch(
+                    checked = state.value.isNotEmpty(),
+                    onCheckedChange = {
+                        state.value = if (it) WiFiUtils.getScanResult() else emptyList()
+                    },
+                    enabled = isHooked
+                )
+            } else {
+                Switch(
+                    checked = false,
+                    onCheckedChange = {
+                        locationPermissionState.launchPermissionRequest()
+                    },
+                    enabled = isHooked
+                )
+            }
+        }
     }
 
 
@@ -149,6 +183,7 @@ private fun ConfigEditorItems(state: ModuleConfigState, launch: () -> Unit) {
     InputBox(state.wifiSSID, stringResource(R.string.net_wifi_ssid))
     InputBox(state.wifiBSSID, stringResource(R.string.net_wifi_bssid))
     InputBox(state.wifiMacAddress, stringResource(R.string.net_wifi_mac))
+    WiFiScanResultSwitch(state.wifiScanResult, stringResource(R.string.net_wifi_scan_results))
 
 
     Title(text = stringResource(R.string.title_sim))

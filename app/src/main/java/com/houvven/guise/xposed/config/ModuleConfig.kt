@@ -21,6 +21,7 @@ data class ModuleConfig(
     var wifiSSID: String = "",
     var wifiBSSID: String = "",
     var wifiMacAddress: String = "",
+    var wifiScanResult: List<WiFiScanResult> = emptyList(),
     var simOperator: String = "",
     var simOperatorName: String = "",
     var simCountry: String = "",

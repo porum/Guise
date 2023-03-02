@@ -42,6 +42,7 @@
     <string name="net_wifi_ssid">WiFi-SSID</string>
     <string name="net_wifi_bssid" translatable="false">WiFi-BSSID</string>
     <string name="net_wifi_mac" translatable="false">WiFi-MAC</string>
+    <string name="net_wifi_scan_results" translatable="false">Cache WiFi ScanResults</string>
     <string name="net_sim_code">SIM Code</string>
     <string name="net_sim_name">SIM Name</string>
     <string name="net_sim_iso">SIM ISO</string>

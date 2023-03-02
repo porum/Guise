@@ -16,6 +16,7 @@ import com.houvven.guise.ui.routing.LauncherState
 import com.houvven.guise.xposed.PackageConfig
 import com.houvven.ktx_xposed.SafeSharePrefs
 import com.houvven.lib.command.ShellActuators
+import java.lang.reflect.ParameterizedType
 
 class ModuleConfigManager
 private constructor(
@@ -100,6 +101,15 @@ private constructor(
                 continue
             } else if (configField.type == String::class.java) {
                 configField.set(config, value as String)
+                continue
+            } else if (configField.type == List::class.java) {
+                val genericType = configField.genericType
+                if (genericType is ParameterizedType) {
+                    val type = genericType.actualTypeArguments[0]
+                    if (type == WiFiScanResult::class.java) {
+                        configField.set(config, value as? List<WiFiScanResult>)
+                    }
+                }
                 continue
             }
 

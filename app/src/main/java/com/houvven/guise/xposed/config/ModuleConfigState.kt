@@ -19,6 +19,7 @@ class ModuleConfigState private constructor(moduleConfig: ModuleConfig) {
     lateinit var wifiSSID: MutableState<String>
     lateinit var wifiBSSID: MutableState<String>
     lateinit var wifiMacAddress: MutableState<String>
+    lateinit var wifiScanResult: MutableState<List<WiFiScanResult>>
     lateinit var simOperator: MutableState<String>
     lateinit var simOperatorName: MutableState<String>
     lateinit var simCountry: MutableState<String>
@@ -64,6 +65,7 @@ class ModuleConfigState private constructor(moduleConfig: ModuleConfig) {
                 when (val value = configField.get(moduleConfig)) {
                     is Boolean -> stateField.set(this, mutableStateOf(value))
                     is String -> stateField.set(this, mutableStateOf(value.toString()))
+                    is List<*> -> stateField.set(this, mutableStateOf(value))
                     else -> {
                         val v = if (configField.get(empty) == value) "" else value.toString()
                         stateField.set(this, mutableStateOf(v))
